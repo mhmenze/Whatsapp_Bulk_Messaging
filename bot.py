@@ -2,8 +2,8 @@ import pywhatkit as pk
 import pyautogui as pg
 import time
 
-with open('F:/MeuLabs/CODES/Whatsapp/royal.txt', 'r', encoding='utf-8') as file:
-    message = file.read()
+# with open('F:/MeuLabs/CODES/Whatsapp/royal.txt', 'r', encoding='utf-8') as file:
+#     message = file.read()
 
 with open('F:/MeuLabs/CODES/Whatsapp/numbers_royal.csv', 'r') as file:
     numbers = file.readlines()
