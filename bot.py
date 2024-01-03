@@ -1,27 +1,85 @@
-import pywhatkit as pk
+from flask import Flask, render_template
+from flask_wtf import FlaskForm
+from wtforms import FileField, SubmitField, TextAreaField
+from wtforms.validators import DataRequired
+from datetime import datetime
 import pyautogui as pg
 import time
+from urllib.parse import quote
+import webbrowser as web
 
-# with open('F:/MeuLabs/CODES/Whatsapp/royal.txt', 'r', encoding='utf-8') as file:
-#     message = file.read()
 
-with open('F:/MeuLabs/CODES/Whatsapp/numbers_royal.csv', 'r') as file:
-    numbers = file.readlines()
+app = Flask(__name__)
+app.config['SECRET_KEY'] = '123'  # Change this to a secret key
 
-hrs = 14
-mins = 5
+class UploadForm(FlaskForm):
+    numbers_file = FileField('Select numbers file (.csv)')
+    message = TextAreaField('Message', validators=[DataRequired()])  # Add StringField for message input
+    submit = SubmitField('Send Messages')
 
-for i, number in enumerate(numbers):
-    phone = number.replace('\n', '')
-    print(i, phone,"  ", end='')  
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    form = UploadForm()
+    #
+    display = ""
+    #
+    if form.validate_on_submit():
+        if form.numbers_file.data:
+            numbers_file = form.numbers_file.data
+            numbers = numbers_file.stream.readlines()
 
-    if mins<60:
-        mins = mins+1
-    else:
-        hrs = hrs+1
-        mins = 1
+            current_time = datetime.now()
+            hrs = current_time.hour
+            mins = current_time.minute
+            internet_speed = ""
 
-    pk.sendwhatmsg(f"+{phone}","Howdy Little  Engineers🤩,\n\nHope you have revisited the lecture materials and made some circuits with TinkerCAD.\nYou can obtain the slides, code & recording of the sission from the following link:\nSession recording:\nhttps://us02web.zoom.us/rec/share/I637zKgHoGh8uDdsTed9Rf12BpwTjshR487MWXIWvlpjebiFKnfHo8aA0Kv95wwY.4Kn7p8hwea4BC6a2\nPasscode: aYUC6#q.\nSlides: https://www.canva.com/design/DAFjG-twn8o/41jtVovSL4wrBIhSm5zsTw/edit?utm_content=DAFjG-twn8o&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton\n\nWe at Meu Labs conduct project-based programs not only covering  Robotics but also Analytics, Software engineering, Creative Arts & many more.\n👨‍🔬🧑‍🎨🧑‍🔧👨‍💻\nYou can explore more on our courses from our site: https://meulabs.org/\n\nIn addition to that we have created many robust free/paid online courses, so you can gain valuable knowledge from the comfort of your home.\nLink: https://www.udemy.com/user/meulabs/\n\nKeep on exploring, keep on discovering but more importantly, keep on trying.\nHoping to meet you very soon.🤓\n\nFor More information or questions, please contact/message : +94719613500\n\n\n_This is an automated message, please reply to the given contact number above for any queries. Thanks_", hrs,mins,25,True,3)
-    print("---> Success !")
-    #time.sleep(3)
-    #pg.hotkey('ctrl','w')
+            # Get the message entered in the text field
+            message = form.message.data
+            parsed_message = quote(message)
+
+            # Check if the submit button was pressed to send messages
+            if form.submit.data:
+                internet_speed = "Medium"
+
+                if(internet_speed=="Fast"):
+                    waiting = 15
+                elif (internet_speed=="Medium"):
+                    waiting = 30
+                else:
+                    waiting = 60
+
+                for i, number in enumerate(numbers):
+                    phone = number.decode('utf-8').strip()  # Decode bytes to string and remove newline characters
+                    #
+                    display = f"{i+1} - {phone} | "
+                    print(display, end='')
+                    if mins < 59:
+                        mins = mins + 1
+                    else:
+                        hrs = (hrs + 1) % 24  # Reset hours to 0 after reaching 24
+                        mins = 0
+                    try:
+                        phone_no=f"+{phone}"
+                        web.open('https://web.whatsapp.com/send?phone=' + phone_no + '&text=' + parsed_message)
+                        time.sleep(waiting)
+                        width, height = pg.size()
+                        pg.click(width / 2, height / 2)
+                        time.sleep(waiting-10)
+                        pg.press('enter')
+                        time.sleep(4)
+                        pg.hotkey("ctrl","w")
+                        time.sleep(0.5)
+                        print("---> Success !")
+                        #
+                        # display.append("---> Success !<br>")
+                    except Exception as e:
+                        print(f"Error sending message to {phone}: {e}")
+                        #
+                        display.append(f"Error sending message to {phone}: {e}<br>")
+
+                return "Messages sent successfully!"
+
+    return render_template("index.html", form=form, display=display)
+
+if __name__ == '__main__':
+    app.run(debug=True)

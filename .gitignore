@@ -1,0 +1,3 @@
+# ignore ALL .csv and log files
+*.csv
+*.log

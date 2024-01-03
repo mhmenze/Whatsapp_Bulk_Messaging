@@ -1,0 +1,91 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>WhatsApp Message Sender</title>
+</head>
+<body>
+    <h1>WhatsApp Message Sender</h1>
+    <form method="post" enctype="multipart/form-data">
+        {{ form.csrf_token }}
+        <p>
+            <label for="numbers_file">Select numbers file (.csv):</label><br>
+            {{ form.numbers_file }}
+        </p>
+        <p>
+            {{ form.submit }}
+        </p>
+    </form>
+</body>
+</html> -->
+
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>WhatsApp Message Sender</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>WhatsApp Message Sender</h1>
+        <form method="post" enctype="multipart/form-data">
+            {{ form.csrf_token }}
+            <div class="form-group">
+                <label for="numbers_file">Select numbers file (.csv):</label>
+                {{ form.numbers_file(class="form-control-file") }}
+            </div>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>            
+        </form>
+    </div>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WhatsApp Bot 🤖</title>
+    <!-- Bootstrap CSS link from CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/main.css" />
+    <script src="/static/scripts.js"></script>
+
+</head>
+<body>
+    <div class="container">
+        <div class="text-center">
+            <h1>WhatsApp Bot 🤖</h1>
+            <form method="post" enctype="multipart/form-data">
+                {{ form.csrf_token }}
+                <div class="info">
+                    <label for="numbers_file">Select numbers file (.csv):</label>
+                </div>
+                <div class="add-file">
+                    {{ form.numbers_file(class="btn form-control-file") }}
+                </div>
+                <div class="input-field">
+                    {{ form.message(id="messageInput", class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-primary") }}
+                </div>
+            </form>
+            <!--  -->
+            <div id="display-area">
+                {% for message in display %}
+                    {{ message | safe }}
+                {% endfor %}
+            </div>
+            <!--  -->
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS scripts (optional, for certain components) -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
